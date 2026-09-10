@@ -13,6 +13,7 @@
 | `feedback.md` | 点击/触摸反馈、状态过渡 |
 | `data.md` | 数据变化（数字滚动、列表增删、进度） |
 | `transition.md` | 弹层、抽屉、路由切换 |
+| `ambient.md` | 氛围类持续动效（光尘、辉光呼吸等），只用于冲击版 |
 | `_template.md` | 新配方模板 |
 
 ## 如何新增一个配方
@@ -21,7 +22,7 @@
 2. 在 `index.md` 末尾加一行，字段与正文保持一致。
 3. 不需要改 `SKILL.md`。
 
-id 规则：分类前缀 + 两位序号，前缀固定为 `en`（entrance）/ `sc`（scroll）/ `hv`（hover）/ `fb`（feedback）/ `dt`（data）/ `tr`（transition）。同一分类内不重复即可。
+id 规则：分类前缀 + 两位序号，前缀固定为 `en`（entrance）/ `sc`（scroll）/ `hv`（hover）/ `fb`（feedback）/ `dt`（data）/ `tr`（transition）/ `am`（ambient）。同一分类内不重复即可。
 
 ## 字段取值
 
@@ -29,9 +30,9 @@ id 规则：分类前缀 + 两位序号，前缀固定为 `en`（entrance）/ `s
 | --- | --- |
 | 区块 | 导航 / 首屏 / 列表 / 卡片 / CTA / 表单 / 弹层 / 页脚 / 通用 |
 | 风格 | 奢华 / 活泼 / 企业 / 内容 / 通用（对应 SKILL.md 第 2 步四行风格表） |
-| 触发 | 入场 / 滚动进入视口 / 滚动驱动 / hover / 点击反馈 / 数据变化 / 路由切换 / 状态过渡 |
+| 触发 | 入场 / 滚动进入视口 / 滚动驱动 / hover / 点击反馈 / 数据变化 / 路由切换 / 状态过渡 / 持续 |
 | 端 | PC / H5 / 双端 |
-| 性能 | 合成层（只动 transform/opacity/filter）/ 重排（动了布局属性，用时要说明） |
+| 性能 | 合成层（只动 transform/opacity）/ 绘制（filter、背景色等）/ 重排（动了布局属性）/ canvas（独立层持续绘制），非合成层的用时要说明 |
 | 依赖 | 无 / IO（IntersectionObserver）/ WAAPI / View Transitions / motion / gsap / 其他库名 |
 
 ## 约定

@@ -159,3 +159,80 @@ document.querySelectorAll('.magnetic').forEach((el) => {
 .magnetic:hover { transition: none; }
 @media (prefers-reduced-motion: reduce) { .magnetic { transition: none; transform: none !important; } }
 ```
+
+### hv-08  3D 倾斜跟随（tilt-follow）
+
+- 区块：卡片 / 首屏 / 媒体
+- 风格：奢华 / 活泼
+- 触发：hover
+- 端：PC
+- 时长/缓动：跟随指针 160ms ease-out，离开 300ms 回正
+- 性能：合成层
+- 依赖：无（少量 JS）
+- 说明：卡片随指针位置绕 X/Y 轴倾斜 ±6–7°，像捧在手里的实物。只给一屏内的焦点卡片（如轮播中心卡）或 hover 中的那一张，不要全屏一起倾斜。父级需要 `perspective`，卡片上不要再挂其他 transform 动画（入场放外层包裹）。常与 hv-09 光泽跟随配合。
+
+```css
+.tilt-host { perspective: 900px; }
+.tilt { transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform 160ms ease-out; will-change: transform; transform-style: preserve-3d; }
+.tilt-host:not(:hover) .tilt { transition-duration: 300ms; }
+@media (prefers-reduced-motion: reduce) { .tilt { transform: none !important; } }
+```
+
+```js
+// max 为最大倾角，默认 7°
+function bindTilt(host, max = 7) {
+  const el = host.querySelector('.tilt');
+  host.addEventListener('pointermove', (e) => {
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+    el.style.setProperty('--ry', `${(px * max * 2).toFixed(2)}deg`);
+    el.style.setProperty('--rx', `${(-py * max * 2).toFixed(2)}deg`);
+  });
+  host.addEventListener('pointerleave', () => { el.style.setProperty('--rx', '0deg'); el.style.setProperty('--ry', '0deg'); });
+}
+```
+
+### hv-09  光泽跟随指针（glare）
+
+- 区块：卡片 / 媒体
+- 风格：奢华 / 活泼
+- 触发：hover
+- 端：PC
+- 时长/缓动：跟随指针，出现 / 消失 200ms
+- 性能：合成层（伪元素 opacity；渐变位置由变量驱动，重绘范围仅该卡片）
+- 依赖：无（复用 hv-08 的 pointermove 写两个变量）
+- 说明：一团柔和高光跟着指针在图片表面移动，模拟实物反光。强度 0.4–0.6 之间，深色底可略高。通常与 hv-08 一起用，单独用也成立。
+
+```css
+.glare { position: relative; overflow: hidden; }
+.glare::before {
+  content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0; transition: opacity 200ms;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 45%);
+}
+@media (hover: hover) { .glare:hover::before { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .glare::before { display: none; } }
+```
+
+```js
+// 在 pointermove 里追加：
+el.style.setProperty('--gx', `${(px + .5) * 100}%`); el.style.setProperty('--gy', `${(py + .5) * 100}%`);
+```
+
+### hv-10  聚焦压暗（spotlight-dim）
+
+- 区块：列表 / 卡片（网格）
+- 风格：奢华 / 内容
+- 触发：hover
+- 端：PC
+- 时长/缓动：320ms cubic-bezier(0.22,1,0.36,1)
+- 性能：合成层（opacity）+ 绘制（filter；网格超过约 24 张一屏时只对可视行启用）
+- 依赖：无
+- 说明：hover 某一张时，同组其他卡片降饱和、压暗、略透明，视线自然聚到当前这张。商品网格、作品集、卡片墙很适合。不要和 hv-01 抬升以外的位移动效叠太多。
+
+```css
+.grid > .card { transition: opacity 320ms cubic-bezier(0.22,1,0.36,1), filter 320ms cubic-bezier(0.22,1,0.36,1); }
+@media (hover: hover) {
+  .grid:hover > .card:not(:hover) { opacity: .72; filter: saturate(.6) brightness(.92); }
+}
+@media (prefers-reduced-motion: reduce) { .grid > .card { transition: none; } .grid:hover > .card:not(:hover) { opacity: 1; filter: none; } }
+```

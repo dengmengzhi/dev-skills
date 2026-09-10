@@ -176,3 +176,23 @@
   .skeleton, .content-enter { animation: none; }
 }
 ```
+
+### en-08  透视推近入场（push-in）
+
+- 区块：卡片 / 列表 / 首屏
+- 风格：奢华 / 活泼 / 内容
+- 触发：入场 / 滚动进入视口
+- 端：双端
+- 时长/缓动：720–800ms cubic-bezier(0.22,1,0.36,1)，错落 90ms
+- 性能：合成层
+- 依赖：无
+- 说明：元素从景深处（缩到 0.86、略下沉）推近到位，比平移上浮更有"橱窗 / 舞台"感，冲击版首选入场。父容器加 perspective 会更立体但不是必需。和 3D 倾斜（hv-08）同用时把入场动画挂在外层包裹元素上，倾斜挂内层，避免 transform 互相覆盖。
+
+```css
+.push-in { animation: push-in 760ms cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(var(--i, 0) * 90ms); }
+@keyframes push-in {
+  from { opacity: 0; transform: scale(.86) translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) { .push-in { animation: none; } }
+```

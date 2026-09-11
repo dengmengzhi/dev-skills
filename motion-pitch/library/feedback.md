@@ -181,3 +181,22 @@ function armRing(ring, target, dur = 4000, onDone) {
   return setTimeout(onDone, dur);
 }
 ```
+
+### fb-08  状态点涟漪扩散（dot-ripple）
+
+- 区块：导航 / 卡片 / 列表（在线、进行中、直播中等状态点）
+- 风格：奢华 / 活泼 / 赛事
+- 触发：持续
+- 端：双端
+- 时长/缓动：2.4s ease-out 循环，同组错开 400ms
+- 性能：合成层（伪元素 transform + opacity）
+- 依赖：无
+- 说明：状态点向外扩散一圈同色细环再消失，像信号发出去，比单纯呼吸更"活"。只给表示"正在进行"的点用，结束态不用。同组多个点用 `--i` 错开，避免同步闪。来源：利陞扑克排队板大屏（Figma）· 2026-09-11
+
+```css
+.dot { position: relative; width: 12px; height: 12px; border-radius: 50%; background: var(--c); }
+.dot::after { content: ''; position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid var(--c);
+  animation: ripple 2.4s ease-out infinite; animation-delay: calc(var(--i, 0) * 400ms); }
+@keyframes ripple { from { transform: scale(1); opacity: .8; } to { transform: scale(3.2); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .dot::after { animation: none; display: none; } }
+```

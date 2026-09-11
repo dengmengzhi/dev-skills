@@ -56,6 +56,7 @@
 - 性能：合成层
 - 依赖：无
 - 说明：hover 时一道高光沿卡片边缘绕一圈。用 conic-gradient + mask 实现，只在深色底上好看。
+- 变体：状态触发绕行一圈——不用 hover，由 JS 加 `.alert` 类触发 `animation: sweep 1400ms linear 1`，用于"被叫 / 更新 / 中奖"这类要把整块面板点亮一次的场景（排队板大屏 · 2026-09-11）。
 
 ```css
 .sweep { position: relative; border-radius: 12px; }
@@ -235,4 +236,45 @@ el.style.setProperty('--gx', `${(px + .5) * 100}%`); el.style.setProperty('--gy'
   .grid:hover > .card:not(:hover) { opacity: .72; filter: saturate(.6) brightness(.92); }
 }
 @media (prefers-reduced-motion: reduce) { .grid > .card { transition: none; } .grid:hover > .card:not(:hover) { opacity: 1; filter: none; } }
+```
+
+
+### hv-12  hover 图集自动轮播（hover-gallery-cycle）
+
+- 区块：卡片 / 列表（多图商品、多图作品）
+- 风格：奢华 / 活泼 / 内容
+- 触发：hover
+- 端：PC
+- 时长/缓动：停留 500ms 后开始，每 1100ms 切一张，交叉淡入 420ms cubic-bezier(0.22,1,0.36,1)
+- 性能：合成层（多层 opacity）
+- 依赖：无（少量 JS）
+- 说明：商品有多张图但列表只露第一张时，hover 停留后自动依次展示全部图，底部条状圆点同步高亮，离开回到第一张。比"hover 换到第二张"信息量更大，适合冲击版；图层预渲染在卡片内，图片要 lazy。
+
+```html
+<div class="pimg multi" data-idx="0">
+  <img class="layer l0" src="…" alt=""><img class="layer l1" src="…" alt=""><img class="layer l2" src="…" alt="">
+</div>
+<div class="dots"><i class="on"></i><i></i><i></i></div>
+```
+
+```css
+.pimg { position: relative; overflow: hidden; }
+.pimg .layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 420ms cubic-bezier(0.22,1,0.36,1); }
+.pimg .layer.l0, .pimg[data-idx="1"] .layer.l1, .pimg[data-idx="2"] .layer.l2 { opacity: 1; }
+.pimg[data-idx="1"] .layer.l0, .pimg[data-idx="2"] .layer.l0 { opacity: 0; }
+.dots { display: flex; justify-content: center; gap: 6px; position: absolute; left: 0; right: 0; bottom: 10px; pointer-events: none; }
+.dots i { width: 14px; height: 4px; border-radius: 2px; background: rgba(0,0,0,.22); transition: background 300ms; }
+.dots i.on { background: var(--brand); }
+@media (prefers-reduced-motion: reduce) { .pimg .layer { transition: none; } }
+```
+
+```js
+function bindGalleryCycle(card, { delay = 500, step = 1100 } = {}) {
+  const img = card.querySelector('.pimg'), dots = card.querySelectorAll('.dots i'), n = img.querySelectorAll('.layer').length;
+  if (n < 2 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const set = (k) => { img.dataset.idx = k; dots.forEach((d, j) => d.classList.toggle('on', j === k)); };
+  let timer = null, k = 0;
+  card.addEventListener('pointerenter', () => { timer = setTimeout(function tick() { k = (k + 1) % n; set(k); timer = setTimeout(tick, step); }, delay); });
+  card.addEventListener('pointerleave', () => { clearTimeout(timer); k = 0; set(0); });
+}
 ```

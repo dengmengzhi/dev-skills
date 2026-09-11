@@ -105,3 +105,31 @@ function countUp(el, to, dur = 1000) {
 /* JS：path.style.setProperty('--len', path.getTotalLength()) */
 @media (prefers-reduced-motion: reduce) { .line-path { animation: none; stroke-dashoffset: 0; } }
 ```
+
+### dt-06  超长列表自动滚动（auto-scroll-list）
+
+- 区块：列表（大屏排队板、榜单、公告栏）
+- 风格：通用
+- 触发：持续（内容超出容器时自动开始，不超出不动）
+- 端：双端（大屏首选）
+- 时长/缓动：按溢出高度算，约 18px/s，两端各停 12%，ease-in-out 往返
+- 性能：合成层（transform）
+- 依赖：无（少量 JS 测量溢出）
+- 说明：无鼠标的大屏上，队列超过板子高度时靠自动上下滚动把尾部露出来；不溢出的列不动。用 CSS 变量 `--over` 传溢出高度、`--dur` 传时长，JS 只负责测量与在数据变化后重测。列间不同步（时长不同）反而自然。来源：利陞扑克排队板大屏（Figma）· 2026-09-11
+
+```css
+.names { overflow: hidden; height: var(--avail); }
+.names.scroll .names-in { animation: scrollY var(--dur, 12s) ease-in-out infinite alternate; animation-delay: 3s; }
+@keyframes scrollY { 0%, 12% { transform: translateY(0); } 88%, 100% { transform: translateY(calc(-1 * var(--over, 0px))); } }
+@media (prefers-reduced-motion: reduce) { .names.scroll .names-in { animation: none; } }
+```
+
+```js
+function measureScroll(names) {            // names = 容器；子元素 .names-in 是实际列表
+  const inner = names.firstElementChild, avail = names.clientHeight, over = inner.scrollHeight - avail;
+  names.classList.toggle('scroll', over > 0);
+  inner.style.setProperty('--over', `${Math.max(0, over)}px`);
+  inner.style.setProperty('--dur', `${Math.max(8, over / 18)}s`);
+}
+// 数据变化后（加入 / 离开）再调一次 measureScroll
+```

@@ -15,6 +15,10 @@
 | `transition.md` | 弹层、抽屉、路由切换 |
 | `ambient.md` | 氛围类持续动效（光尘、辉光呼吸等），只用于冲击版 |
 | `_template.md` | 新配方模板 |
+| `check.sh` | 自检脚本：索引一致性、reduced-motion、重复 id、未提交改动 |
+| `contribute.sh` | 把一条本地配方贡献回上游（建 issue 或生成预填链接） |
+| `UPSTREAM` | 上游仓库 `owner/repo`，contribute.sh 与身份判定用 |
+| `issue-template.md` | 手动开 issue 贡献配方时的格式参考 |
 
 ## 如何新增一个配方
 
@@ -35,9 +39,36 @@ id 规则：分类前缀 + 两位序号，前缀固定为 `en`（entrance）/ `s
 | 性能 | 合成层（只动 transform/opacity）/ 绘制（filter、背景色等）/ 重排（动了布局属性）/ canvas（独立层持续绘制），非合成层的用时要说明 |
 | 依赖 | 无 / IO（IntersectionObserver）/ WAAPI / View Transitions / motion / gsap / 其他库名 |
 
+## 库怎么变强
+
+配方有三个入口：冲击版里用到的新手法自动入库；常规版或联网搜到的新手法问过你再入库；你在任何项目里指着一个效果说"入库"，我按模板提炼后写进来。技能目录软链到本仓库，所以在别的项目里用 motion-pitch，配方也写到这里。
+
+我不做 git 提交。每次用完我会在对话里列出"本次库变更（未提交）"，你 review 后自己 commit。提交前可以跑一次自检：
+
+```bash
+bash motion-pitch/library/check.sh
+```
+
+它会校验索引与正文一致、每条配方带 reduced-motion 降级、无重复 id，并列出未提交的改动和新增配方。
+
+### 从 GitHub 拿走用的人，怎么把新配方贡献回来
+
+上游仓库写在 `UPSTREAM`。你在自己机器上入库后，跑：
+
+```bash
+bash motion-pitch/library/contribute.sh <配方id>
+```
+
+有 `gh` 且已登录会直接在上游建一个 `recipe: <id> <名称>` 的 issue；没有 `gh` 会生成 `outbox/<id>.md` 并打印一个预填好标题和正文的 New issue 链接，点开确认就行。也可以照 `issue-template.md` 的格式手动开 issue。想走 PR 也可以：fork 后把配方段追加到分类文件、索引加一行、跑 `check.sh`，提 PR。
+
+### 维护者收件
+
+看标题 `recipe:` 开头的 issue，把正文追加到对应分类文件、索引加一行，跑 `check.sh`，commit，关 issue。或者对 motion-pitch 说"处理配方收件箱"，由它逐条落库，你只负责 review 和 commit。
+
 ## 约定
 
 - 代码段必须自带 `prefers-reduced-motion` 降级。
 - 时长与缓动写默认值，实际使用时按 SKILL.md 第 2 步判定的风格档调整。
 - 一个配方只做一件事，组合手法拆成多个配方。
-- 从联网搜索沉淀进来的配方，`说明` 末尾注明来源站点或作者，便于日后核对。
+- 每条配方的 `说明` 末尾注明来源：`来源：<站点或项目> <模块> · <日期>`；联网搜到的写站点或作者。
+- 相近手法不开新 id，在原配方 `说明` 末尾加一行"变体：…"。

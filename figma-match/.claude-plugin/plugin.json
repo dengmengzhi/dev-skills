@@ -1,0 +1,7 @@
+{
+  "name": "figma-match",
+  "version": "1.0.0",
+  "description": "Figma UI 1:1 还原：测量代替目测，真值表驱动修改，PC/H5 双端分叉隔离。",
+  "author": { "name": "dengmengzhi" },
+  "repository": "https://github.com/dengmengzhi/dev-skills"
+}

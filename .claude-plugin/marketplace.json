@@ -1,0 +1,13 @@
+{
+  "name": "dev-skills",
+  "description": "个人 skill 仓库：按 skill 拆成独立插件，项目按需在 .claude/settings.json 里启用。",
+  "owner": { "name": "dengmengzhi", "url": "https://github.com/dengmengzhi" },
+  "plugins": [
+    {
+      "name": "figma-match",
+      "source": "./figma-match",
+      "description": "Figma UI 1:1 还原：测量代替目测，真值表驱动修改，PC/H5 双端分叉隔离。",
+      "version": "1.0.0"
+    }
+  ]
+}

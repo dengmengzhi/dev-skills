@@ -278,3 +278,48 @@ function bindGalleryCycle(card, { delay = 500, step = 1100 } = {}) {
   card.addEventListener('pointerleave', () => { clearTimeout(timer); k = 0; set(0); });
 }
 ```
+
+### hv-13  弧形填充扫入（curved-fill-wipe）
+
+- 区块：CTA
+- 风格：奢华 / 企业
+- 触发：hover
+- 端：PC
+- 时长/缓动：填充 900ms ease；文字变色 500ms ease（文字比填充快，先于填充完成翻色）
+- 性能：绘制（过渡 width，作用域限于按钮本身）
+- 依赖：无
+- 说明：填充层从按钮左侧扫过，前缘是**上半段直、下半段向左收**的弧线，扫满后按钮整体换色、文字反色。弧形来自「只圆右下角 + 元素高于按钮、超出部分被裁掉」这个组合，不是对称椭圆——这点是该手法的辨识度所在，做成椭圆或直边就泄气了。三个关键量：`height:120%`（撑出被裁掉的那段，弧线才有斜度）、`left:-5px`（左侧不留缝）、宽度终值 `150%`（超过按钮宽，让弧线完整走出右边缘，否则停在一半像没扫完）。按钮需 `overflow:hidden`；轮廓不是矩形时（切角、异形）把 `overflow` 换成同形的 `clip-path`。刻意没用 `transform:scaleX()` 上合成层——横向缩放会把弧线拉扁。来源：maserati.com CTA · 2026-09-14
+
+```html
+<button class="wipe-btn">
+  <span class="wipe-fill" aria-hidden="true"></span>
+  <span class="wipe-label">赛事详情</span>
+</button>
+```
+
+```css
+.wipe-btn {
+  position: relative; overflow: hidden;
+  background: var(--btn-bg, #cfa457); border: 0; cursor: pointer;
+  /* 异形轮廓把 overflow 换成 clip-path，例如 45° 切角：
+     clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px); */
+}
+.wipe-fill {
+  position: absolute; left: -5px; top: 0; width: 0; height: 120%;
+  background: var(--btn-fill, #813472);
+  border-radius: 0 0 50px 0;                 /* 只圆右下角 = 弧形前缘 */
+  transition: width 900ms ease;
+}
+.wipe-label {
+  position: relative;                        /* 压在填充层之上 */
+  color: var(--btn-text, #000);
+  transition: color 500ms ease;
+}
+@media (hover: hover) {
+  .wipe-btn:hover .wipe-fill { width: 150%; }
+  .wipe-btn:hover .wipe-label { color: var(--btn-text-hover, #fff); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wipe-fill, .wipe-label { transition: none; }   /* 降级成瞬时换色 */
+}
+```

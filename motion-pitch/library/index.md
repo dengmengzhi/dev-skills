@@ -29,6 +29,7 @@
 | hv-09 | 光泽跟随指针 | 卡片/媒体 | 奢华/活泼 | hover | PC | 合成层 | hover.md |
 | hv-10 | 聚焦压暗 | 列表/卡片 | 奢华/内容 | hover | PC | 合成层+绘制 | hover.md |
 | hv-12 | hover 图集自动轮播 | 卡片/列表 | 奢华/活泼/内容 | hover | PC | 合成层 | hover.md |
+| hv-13 | 弧形填充扫入 | CTA | 奢华/企业 | hover | PC | 绘制 | hover.md |
 | fb-01 | 按压缩放 | CTA/卡片/列表 | 通用 | 点击反馈 | 双端 | 合成层 | feedback.md |
 | fb-02 | 涟漪 | CTA/列表 | 活泼/企业 | 点击反馈 | 双端 | 合成层 | feedback.md |
 | fb-03 | Tab 指示器滑动 | 导航/表单 | 企业/内容/活泼 | 状态过渡 | 双端 | 合成层 | feedback.md |

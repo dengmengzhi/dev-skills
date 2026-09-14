@@ -8,6 +8,18 @@
       "source": "./figma-match",
       "description": "Figma UI 1:1 还原：测量代替目测，真值表驱动修改，PC/H5 双端分叉隔离。",
       "version": "1.0.0"
+    },
+    {
+      "name": "my-dev-flow",
+      "source": "./my-dev-flow",
+      "description": "新需求开发全流程：摸清项目约定、需求梳理、设计文档、编码、UI 还原到回归验证。",
+      "version": "1.0.0"
+    },
+    {
+      "name": "motion-pitch",
+      "source": "./motion-pitch",
+      "description": "页面动效推荐与预览：先分析页面再出三套方案，本地配方库驱动，预览确认后落地，单次只做一端。",
+      "version": "1.0.0"
     }
   ]
 }

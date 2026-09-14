@@ -82,6 +82,7 @@
 - 性能：合成层（background-position 在渐变文字上开销小，但大面积慎用）
 - 依赖：无
 - 说明：金属质感标题上扫过一道高光。只用在一处主标题上，多处流光显廉价。持续循环时间隔 ≥ 5s。
+- 变体「覆盖层流光」：上面的写法把标题**原渐变**改宽再推 `background-position`，静止态的颜色分布会跟着变（两端的收边被拉出视野）。标题本来就带品牌渐变时，这就是改观感而不是加动效。改法：叠一层同字同位、`aria-hidden` 的副本只承载那道高光，底层渐变一字不动。`background-repeat: no-repeat` 是必需的——默认平铺会让高光带移出后从另一侧再冒出来。降级要**整层撤掉**而不是 `animation: none`，否则会有一道死光停在标题上。验收：静止段「带覆盖层 / 摘掉覆盖层」两张截图应当字节一致。来源：kpc-fe 首页赛事倒计时 Hero · 2026-09-14
 
 ```css
 .shimmer-text {
@@ -98,6 +99,35 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .shimmer-text { animation: none; background-position: 0 0; }
+}
+```
+
+变体「覆盖层流光」实现（标题自身的样式完全不动）：
+
+```html
+<p class="title">
+  <span aria-hidden class="shine-layer">KPC POKER SERIES</span>
+  KPC POKER SERIES
+</p>
+```
+
+```css
+.title { position: relative; /* 原有的品牌渐变 / background-clip:text 保持不动 */ }
+.shine-layer {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image: linear-gradient(110deg, transparent 42%, rgba(255,248,214,.85) 50%, transparent 58%);
+  background-size: 250% 100%;
+  background-repeat: no-repeat;          /* 少了它高光会从另一侧再冒出来 */
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  animation: shine-sweep 6s linear infinite;
+}
+@keyframes shine-sweep {
+  0%        { background-position: 250% 0; }
+  23%, 100% { background-position: -150% 0; }   /* 扫 23%，其余时间高光在画外 */
+}
+@media (prefers-reduced-motion: reduce) {
+  .shine-layer { display: none; }        /* 整层撤掉，不能只停动画 */
 }
 ```
 

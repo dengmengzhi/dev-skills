@@ -15,6 +15,7 @@
 | `transition.md` | 弹层、抽屉、路由切换 |
 | `ambient.md` | 氛围类持续动效（光尘、辉光呼吸等），只用于冲击版 |
 | `_template.md` | 新配方模板 |
+| `sources.md` | 取材站点清单 + 当前缺口。**联网找新手法前先读这份，按清单逛，不泛搜索引擎** |
 | `check.sh` | 自检脚本：索引一致性、reduced-motion、重复 id、未提交改动 |
 | `contribute.sh` | 把一条本地配方贡献回上游（建 issue 或生成预填链接） |
 | `UPSTREAM` | 上游仓库 `owner/repo`，contribute.sh 与身份判定用 |

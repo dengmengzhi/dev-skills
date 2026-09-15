@@ -39,3 +39,37 @@ function goldDust(canvas, { count = 70, color = '212,168,83' } = {}) {
   return () => { io.disconnect(); visible = false; };
 }
 ```
+
+
+### am-02  视点缓移（view-drift）
+
+- 区块：首屏 / 通用（任何 3D 透视容器：卡片轮播、倾斜阵列）
+- 风格：奢华
+- 触发：持续（进入视口开始，离开暂停）
+- 端：PC（H5 视口小，位移比例要减半，否则边缘卡会进出画面）
+- 时长/缓动：9s ease-in-out 循环，偏移幅度 ±3%
+- 性能：合成层（只改 perspective-origin，不触发布局）
+- 依赖：无（纯 CSS）
+- 说明：让 3D 容器的**观察点**极缓漂移，整片阵列像被一台缓慢移动的摄影机拍着，静止画面也有呼吸感。
+  关键是**不要用容器 rotateY 做呼吸**：复合矩阵 Rx·Ry 存在 x→y 的耦合项，阵列会整体变成一侧高一侧低
+  （实测 rotateY -10° 时最左与最右卡中心相差 40.2px），而且这个偏差没法只靠平移补偿。
+  改 perspective-origin 没有这个耦合，观感接近但几何保持对称。幅度超过 ±5% 会让边缘元素明显进出画面。
+  来源：kpc-fe 首页选手风采 3D 轮播 · 2026-09-15
+
+```css
+.scene { perspective: 1300px; perspective-origin: 50% 50%; }
+.scene.drift { animation: view-drift 9s ease-in-out infinite; }
+@keyframes view-drift {
+  0%, 100% { perspective-origin: 50% 50%; }
+  33%      { perspective-origin: 53.5% 47%; }
+  66%      { perspective-origin: 47% 52.5%; }
+}
+@media (prefers-reduced-motion: reduce) { .scene.drift { animation: none; } }
+```
+
+```js
+// 离开视口暂停，不空耗
+new IntersectionObserver(([e]) => {
+  e.target.style.animationPlayState = e.isIntersecting ? 'running' : 'paused';
+}, { threshold: .05 }).observe(document.querySelector('.scene'));
+```

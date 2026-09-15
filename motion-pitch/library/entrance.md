@@ -226,3 +226,33 @@
 }
 @media (prefers-reduced-motion: reduce) { .push-in { animation: none; } }
 ```
+
+
+### en-09  洗牌展开（deal-out）
+
+- 区块：列表 / 卡片（轮播卡阵、扇形排布的一组卡）
+- 风格：奢华 / 活泼
+- 触发：入场 / 滚动进入视口
+- 端：双端
+- 时长/缓动：760ms cubic-bezier(.34,1.3,.64,1)，错峰 90ms（离中心每远一档晚一档）
+- 性能：合成层
+- 依赖：无（少量 JS：先把全部项设成同一个起始姿态，强制重排，再应用各自的目标姿态）
+- 说明：整组卡先叠在中心成一摞，再像发牌一样扇到各自的位置。和 en-02 错落入场的区别是「起点是同一个点」而不是各自的邻近位置，所以观感是"从无到有地摊开"而不是"依次就位"；和 en-08 透视推近的区别是终点姿态各不相同（扇形），推近是各归各位地拉近。轮播类组件用它最自然——起始姿态直接取中心卡的姿态即可，不必另算。缓动带一点回弹（1.3）是发牌的手感来源，纯 ease-out 会显得是"滑"过去。**必须在设起始姿态后强制一次重排**，否则浏览器会把两次样式合并，卡片直接出现在终点。来源：kpc-fe 首页选手风采 3D 轮播 · 2026-09-15
+
+```js
+// poses[i] 为各项目标姿态，start 为共同起点（轮播取中心卡姿态）
+function dealOut(items, poses, start, {dur = 760, stagger = 90,
+                 ease = 'cubic-bezier(.34,1.3,.64,1)'} = {}) {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  items.forEach((el) => { el.style.transition = 'none'; el.style.transform = start; });
+  void items[0].offsetWidth;                       // 强制重排，缺了它整段动画不会发生
+  items.forEach((el, i) => {
+    el.style.transition = reduce ? 'none' : `transform ${dur}ms ${ease} ${Math.abs(poses[i].d) * stagger}ms`;
+    el.style.transform = poses[i].transform;
+  });
+}
+```
+
+```css
+@media (prefers-reduced-motion: reduce) { .deal-item { transition: none !important; } }
+```

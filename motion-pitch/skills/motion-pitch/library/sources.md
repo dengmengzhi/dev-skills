@@ -19,7 +19,7 @@
 | --- | --- | --- |
 | awwwards.com | Sites of the Day，可按 Animation / Transitions 筛 | 获奖站基本动效驱动 |
 | thefwa.com | 更偏实验性的重型动效 | 激进版参考 |
-| godly.website | 策展质量高，有 Dark / Luxury / 3D 标签 | **最贴 KPC 深色奢华** |
+| godly.website | 策展质量高，有 Dark / Luxury / 3D 标签 | 深色 / 奢华向的首选 |
 | gsap.com/showcase | 重动效商业站 | 能反查它们用的是什么实现 |
 | land-book.com、lapa.ninja | 落地页为主 | 找首屏 Hero 的入场节奏 |
 

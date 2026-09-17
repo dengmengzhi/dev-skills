@@ -47,7 +47,7 @@ id 规则：分类前缀 + 两位序号，前缀固定为 `en`（entrance）/ `s
 我不做 git 提交。每次用完我会在对话里列出"本次库变更（未提交）"，你 review 后自己 commit。提交前可以跑一次自检：
 
 ```bash
-bash motion-pitch/library/check.sh
+bash motion-pitch/skills/motion-pitch/library/check.sh
 ```
 
 它会校验索引与正文一致、每条配方带 reduced-motion 降级、无重复 id，并列出未提交的改动和新增配方。
@@ -57,7 +57,7 @@ bash motion-pitch/library/check.sh
 上游仓库写在 `UPSTREAM`。你在自己机器上入库后，跑：
 
 ```bash
-bash motion-pitch/library/contribute.sh <配方id>
+bash motion-pitch/skills/motion-pitch/library/contribute.sh <配方id>
 ```
 
 有 `gh` 且已登录会直接在上游建一个 `recipe: <id> <名称>` 的 issue；没有 `gh` 会生成 `outbox/<id>.md` 并打印一个预填好标题和正文的 New issue 链接，点开确认就行。也可以照 `issue-template.md` 的格式手动开 issue。想走 PR 也可以：fork 后把配方段追加到分类文件、索引加一行、跑 `check.sh`，提 PR。

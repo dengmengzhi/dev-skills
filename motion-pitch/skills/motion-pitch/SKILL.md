@@ -29,7 +29,7 @@ description: Use when 用户要求给某个页面、区块或组件的 PC 端或
 - 只取所选端那个 frame 的 `get_design_context`；`get_variable_defs` 拿颜色 / 字号 / 圆角 token；`get_screenshot` 作辅助（带 mask / blur 的节点会返回空图，以 context 里的 token 为准）。
 - 结构表由 frame 的一级 auto-layout 子节点生成，区块类型按图层名与内容判定；"当前动效"一列填"无（设计稿）"，Figma 里有 prototype 交互（Smart Animate、hover 变体）的记下来当既有动效语言。
 - 图片 / 图标优先用 `download_assets` 导出（`rawImages` 原图、`svgAssets` 图标 SVG、`export` 整节点渲染图）；**只有查看权限时它会报"没有编辑权限"，这时直接用 `get_design_context` 返回的资产 URL 常量下载**，两者 URL 都临时有效，要立刻 curl 落盘。
-- 内联前先压：设计稿原图常是 4096 宽的 PNG，整套资产几 MB，直接 base URI 会撑爆预览。用 `sips -Z <目标宽>` 缩到显示尺寸的 2 倍以内，背景图转 JPEG（`sips -s format jpeg -s formatOptions 82`），SVG 原样。目标：整页资产 < 1MB。**预览页一律转 data URI 内联**（外链会被预览环境拦），用一个构建脚本把模板里的 `{{asset:文件名}}` 替换成 data URI，模板与资产分开维护；落地阶段才放进项目 `public/` 或换项目图片域。
+- 内联前先压：设计稿原图常是 4096 宽的 PNG，整套资产几 MB，直接 base URI 会撑爆预览。缩到显示尺寸的 2 倍以内，背景图转 JPEG（质量 80 左右），SVG 原样。压缩工具按平台取可用的那个：macOS 用 `sips -Z <目标宽>` / `sips -s format jpeg -s formatOptions 82`；有 ImageMagick 用 `magick <in> -resize <宽>x -quality 82 <out.jpg>`；再不然用 Python Pillow（`Image.open(f).thumbnail((w,w)); im.convert("RGB").save(out, quality=82)`）。三者都没有就跳过压缩，并在对话里说明预览页资产偏大、可能加载慢。目标：整页资产 < 1MB。**预览页一律转 data URI 内联**（外链会被预览环境拦），用一个构建脚本把模板里的 `{{asset:文件名}}` 替换成 data URI，模板与资产分开维护；落地阶段才放进项目 `public/` 或换项目图片域。
 - 字体：设计稿字体在 Google Fonts 有的（Bebas Neue、Montserrat、El Messiri、Noto Serif SC 等）用 `<link>` 引入，没有的（MiSans、思源宋体商用版）写系统字体回退，在预览页说明。
 - 第 2 步风格判定直接从 token 取色板、字体、圆角。
 

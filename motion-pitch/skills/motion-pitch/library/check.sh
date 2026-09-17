@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 配方库自检：索引与正文一致、每条配方带 reduced-motion 降级、无重复 id、列出未提交的库改动。
-# 用法：bash motion-pitch/library/check.sh
+# 用法：bash motion-pitch/skills/motion-pitch/library/check.sh
 set -u
 cd "$(dirname "$0")" || exit 1
 files=(entrance.md scroll.md hover.md feedback.md data.md transition.md ambient.md)

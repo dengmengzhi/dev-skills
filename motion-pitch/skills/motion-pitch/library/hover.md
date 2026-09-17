@@ -364,14 +364,14 @@ if (fine && !calm) {
   position: fixed; left: 0; top: 0; z-index: 9999; pointer-events: none;
   border-radius: 50%; will-change: transform;
 }
-.cursor-dot  { width: 6px; height: 6px; background: var(--cursor-color, #c19c67); }
+.cursor-dot  { width: 6px; height: 6px; background: var(--cursor-color, currentColor); }
 .cursor-ring {
-  width: 32px; height: 32px; border: 1px solid var(--cursor-color, #c19c67);
+  width: 32px; height: 32px; border: 1px solid var(--cursor-color, currentColor);
   transition: width 250ms ease, height 250ms ease, background-color 250ms ease;
 }
 .cursor-ring.is-active {
   width: 56px; height: 56px;
-  background: color-mix(in srgb, var(--cursor-color, #c19c67) 12%, transparent);
+  background: color-mix(in srgb, var(--cursor-color, currentColor) 12%, transparent);
 }
 .has-custom-cursor, .has-custom-cursor a, .has-custom-cursor button { cursor: none; }
 .has-custom-cursor input, .has-custom-cursor textarea, .has-custom-cursor [contenteditable] { cursor: auto; }
@@ -420,7 +420,7 @@ if (fine && !calm) {
 .cursor-trail {
   position: fixed; left: 0; top: 0; z-index: 9998; pointer-events: none;
   width: 14px; height: 14px; border-radius: 50%;
-  background: var(--cursor-color, #c19c67);
+  background: var(--cursor-color, currentColor);
   mix-blend-mode: screen; will-change: transform, opacity;
 }
 @media (prefers-reduced-motion: reduce) { .cursor-trail { display: none; } }
@@ -457,7 +457,7 @@ document.querySelectorAll('.spotlight').forEach((box) => {
 .spotlight::before {
   content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
   background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%),
-              color-mix(in srgb, var(--cursor-color, #c19c67) 18%, transparent), transparent 70%);
+              color-mix(in srgb, var(--cursor-color, currentColor) 18%, transparent), transparent 70%);
   opacity: 0; transition: opacity 300ms ease;
 }
 @media (hover: hover) { .spotlight:hover::before { opacity: 1; } }
@@ -496,7 +496,7 @@ if (fine) {
 .cursor-label {
   position: fixed; left: 0; top: 0; z-index: 9999; pointer-events: none;
   padding: 6px 14px; border-radius: 999px;
-  background: var(--cursor-color, #c19c67); color: #0a0a0a;
+  background: var(--cursor-accent, #111); color: var(--cursor-accent-fg, #fff);
   font-size: 12px; letter-spacing: 0.04em; white-space: nowrap;
   opacity: 0; transform-origin: 0 0; will-change: transform, opacity;
   transition: opacity 300ms ease, scale 300ms cubic-bezier(0.22,1,0.36,1);
@@ -652,8 +652,8 @@ if (hero && matchMedia('(hover: hover) and (pointer: fine)').matches) {
 .clip-reveal { position: relative; overflow: hidden; }
 .clip-reveal__layer {
   position: absolute; inset: 0;
-  background: var(--brand, #c19c67);
-  display: grid; place-items: center; color: #0a0a0a;
+  background: var(--brand, #1a1a1a);
+  display: grid; place-items: center; color: var(--brand-fg, #fff);
   clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);   /* 收在底边，4 顶点 */
   transition: clip-path 600ms cubic-bezier(0.22,1,0.36,1);
 }

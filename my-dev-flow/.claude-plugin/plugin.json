@@ -1,0 +1,7 @@
+{
+  "name": "my-dev-flow",
+  "version": "1.0.0",
+  "description": "新需求开发全流程：摸清项目约定、需求梳理、设计文档、编码、UI 还原到回归验证。",
+  "author": { "name": "dengmengzhi" },
+  "repository": "https://github.com/dengmengzhi/dev-skills"
+}

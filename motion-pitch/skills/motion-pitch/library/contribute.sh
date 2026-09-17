@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 把本地库里的一条配方贡献回上游仓库（GitHub Issue）。
-# 用法：bash motion-pitch/library/contribute.sh <配方id>   例：bash motion-pitch/library/contribute.sh hv-12
+# 用法：bash motion-pitch/skills/motion-pitch/library/contribute.sh <配方id>   例：bash motion-pitch/skills/motion-pitch/library/contribute.sh hv-12
 # 有 gh 且已登录 → 直接建 issue；否则生成 outbox/<id>.md 并给出预填好的 New issue 链接，手动贴一下即可。
 set -eu
 cd "$(dirname "$0")"

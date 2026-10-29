@@ -12,6 +12,7 @@
 - 性能：canvas 每帧重绘，70 个粒子在 1440×720 下开销可忽略；离开视口必须停 rAF
 - 依赖：无（canvas 2D）
 - 说明：几十粒微小的金色光点在深色背景里缓慢升腾、明暗呼吸，像会所里的浮尘或舞台的光屑。深色底专用，浅色底不成立。颜色跟品牌金，透明度 0.18–0.5。
+  变体：银色光尘 + 约 12% 朱红点缀（银色/朱红主题站），粒子 `fillStyle` 银用 `rgba(230,230,230,a)`、朱红用 `rgba(229,57,53,a)`，`shadowBlur 6` 同色发光；约 70 粒，IntersectionObserver 离开视口停 rAF，配方开关取消时 cancelAnimationFrame 并清画布。来源：kpc-fe 首页首屏（PC）· 2026-10-05
 
 ```html
 <canvas class="dust" width="1440" height="720" aria-hidden="true"></canvas>
@@ -72,4 +73,33 @@ function goldDust(canvas, { count = 70, color = '212,168,83' } = {}) {
 new IntersectionObserver(([e]) => {
   e.target.style.animationPlayState = e.isIntersecting ? 'running' : 'paused';
 }, { threshold: .05 }).observe(document.querySelector('.scene'));
+```
+
+### am-03  中心背光呼吸（backlight-breathe）
+
+- 区块：卡片 / 列表（轮播中心卡、主推卡）/ 首屏
+- 风格：奢华
+- 触发：持续
+- 端：双端
+- 时长/缓动：4s ease-in-out 循环（opacity 0.55↔1 + scale 0.94↔1.06）
+- 性能：合成层（单个模糊圆只动 transform / opacity；blur 只在首帧栅格化）
+- 依赖：无（IO 离开视口暂停）
+- 说明：在中心卡背后放一团模糊的径向光，缓慢呼吸，把视线锁在主推卡上，深色底专用。光的颜色取品牌双色：核心用主色（银 rgba(230,230,230,.24)），外晕用强调色（朱红 rgba(180,30,35,.2)）。中心卡位置固定的轮播（切换时卡在动、中心位不动）直接把光挂在舞台正中，不用跟随卡片；卡片层级要高于光（光 z-index 0，卡片 ≥1）。每页最多一处持续氛围动效，和 am-01 光尘不要同屏。来源：kpc-fe 首页赛事日历（PC）· 2026-10-05
+```css
+.stage { position: relative; }
+.backlight {
+  position: absolute; left: 50%; top: 50%; width: 620px; height: 680px; margin: -340px 0 0 -310px;
+  z-index: 0; pointer-events: none; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(230,230,230,.24), rgba(180,30,35,.2) 55%, transparent 100%);
+  filter: blur(24px);
+  animation: backlight-breathe 4s ease-in-out infinite;
+}
+.stage.paused .backlight { animation-play-state: paused; }
+@keyframes backlight-breathe { 0%, 100% { opacity: .55; transform: scale(.94); } 50% { opacity: 1; transform: scale(1.06); } }
+@media (prefers-reduced-motion: reduce) { .backlight { animation: none; display: none; } }
+```
+```js
+// 离开视口暂停
+new IntersectionObserver(([e]) => e.target.classList.toggle('paused', !e.isIntersecting), { threshold: .3 })
+  .observe(document.querySelector('.stage'));
 ```

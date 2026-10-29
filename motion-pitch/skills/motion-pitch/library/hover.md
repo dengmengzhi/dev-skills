@@ -203,6 +203,7 @@ function bindTilt(host, max = 7) {
 - 性能：合成层（伪元素 opacity；渐变位置由变量驱动，重绘范围仅该卡片）
 - 依赖：无（复用 hv-08 的 pointermove 写两个变量）
 - 说明：一团柔和高光跟着指针在图片表面移动，模拟实物反光。强度 0.4–0.6 之间，深色底可略高。通常与 hv-08 一起用，单独用也成立。
+  变体（文字版）：大标题每行叠一个同文案的 `aria-hidden` 覆盖层，`color:transparent` + `background-clip:text`，背景是 `radial-gradient(circle 200px at var(--tx) calc(var(--ty) - var(--i) * <行高>), #fff, rgba(255,255,255,.85) 30%, transparent 70%)`，高光只落在字形内；浅色字（如 #d6d6d6）提亮不明显，需加 `filter: drop-shadow(0 0 6px rgba(255,255,255,.9)) drop-shadow(0 0 18px rgba(255,255,255,.55))` 让亮区发光。指针在整块首屏内就跟随（坐标换算成标题内 px，缩放舞台要除以缩放比），离开首屏 opacity 300ms 淡出；reduced-motion 下不绑定。来源：kpc-fe 首页首屏标题（PC）· 2026-10-05
 
 ```css
 .glare { position: relative; overflow: hidden; }
